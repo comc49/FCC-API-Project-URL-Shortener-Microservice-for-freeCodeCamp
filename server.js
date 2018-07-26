@@ -38,16 +38,17 @@ app.get('/', function(req, res){
 });
 
 app.get('/api/shorturl/:id', function(req, res){
-  urlModel.find({id: req.params.id}).exec(function(err,doc) {
+  urlModel.find({id: Number(req.params.id)}).exec(function(err,doc) {
     if (err) res.send('404');
-    res.redirect(doc);
+    if (doc) {
+      res.redirect(doc[0].url);
+    }
   })
 });
 
 
 app.post('/api/shorturl/new', function(req,res) {
   urlModel.countDocuments({},function(err,cnt){
-    console.log(cnt,'cnt');
     let newUrl = new urlModel({
       url: req.body.url,
       id: Number(cnt + 1),
@@ -55,7 +56,6 @@ app.post('/api/shorturl/new', function(req,res) {
       if (err) {
         res.send(err);
       }
-        console.log(doc,'doc');
         res.send({"original_url":req.body.url,"short_url":Number(cnt+1)});
       });
   })
