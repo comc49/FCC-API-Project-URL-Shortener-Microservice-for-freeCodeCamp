@@ -4,6 +4,14 @@ var express = require('express');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 
+var urlSchema = new mongoose.Schema({
+  url: String,
+  id: Number,
+});
+
+var urlModel = mongoose.model('urlModel', urlSchema);
+
+
 var cors = require('cors');
 
 var app = express();
@@ -25,7 +33,18 @@ app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-app.post('
+app.get('api/shorturl/:id', function(req, res){
+  urlModel.find({id: req.params.id}).exec(function(err,doc) {
+    if (err) res.send('404');
+    res.redirect(doc);
+  })
+});
+
+
+app.post('api/shorturl/new', function(req,res) {
+  let 
+  
+})
 
   
 // your first API endpoint... 
