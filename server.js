@@ -45,20 +45,27 @@ app.get('/api/shorturl/:id', function(req, res){
 
 
 app.post('/api/shorturl/new', function(req,res) {
-  console.log("WHAT THE");
-  urlModel.count().then(cnt => {
-      console.log(req.body.url,cnt)
-
-    let newUrl = new urlModel({
+   let newUrl = new urlModel({
       url: req.body.url,
-      id: cnt+ 1,
+      id: 1,
     }).save(function(err,doc) {
       if (err) res.send('404');
         console.log(doc,'doc');
         res.send("SAVED!");
       });
+//   urlModel.countDocuments({}).then((err,cnt) => {
+//       console.log(req.body.url,cnt)
+
+//     let newUrl = new urlModel({
+//       url: req.body.url,
+//       id: cnt+ 1,
+//     }).save(function(err,doc) {
+//       if (err) res.send('404');
+//         console.log(doc,'doc');
+//         res.send("SAVED!");
+//       });
     
-  })
+//   })
  
   
 })
