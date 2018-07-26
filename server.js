@@ -3,6 +3,7 @@
 var express = require('express');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
+var bodyParser = require("body-parser");
 
 var urlSchema = new mongoose.Schema({
   url: String,
@@ -28,12 +29,14 @@ app.use(cors());
 // you should mount the body-parser here
 
 app.use('/public', express.static(process.cwd() + '/public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-app.get('api/shorturl/:id', function(req, res){
+app.get('/api/shorturl/:id', function(req, res){
   urlModel.find({id: req.params.id}).exec(function(err,doc) {
     if (err) res.send('404');
     res.redirect(doc);
@@ -41,8 +44,10 @@ app.get('api/shorturl/:id', function(req, res){
 });
 
 
-app.post('api/shorturl/new', function(req,res) {
-  let 
+app.post('/api/shorturl/new', function(req,res) {
+  let newUrl = urlModel({url: req.body.url}).save(function(err,doc) {
+    if (err) res.send('404');
+  });
   
 })
 
