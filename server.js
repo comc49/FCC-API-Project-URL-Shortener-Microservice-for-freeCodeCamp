@@ -4,6 +4,7 @@ var express = require('express');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var bodyParser = require("body-parser");
+mongoose.connect(process.env.MONGO_URI,{ useNewUrlParser: true } );
 
 var urlSchema = new mongoose.Schema({
   url: String,
@@ -45,29 +46,19 @@ app.get('/api/shorturl/:id', function(req, res){
 
 
 app.post('/api/shorturl/new', function(req,res) {
-   let newUrl = new urlModel({
+  urlModel.countDocuments({},function(err,cnt){
+    console.log(cnt,'cnt');
+    let newUrl = new urlModel({
       url: req.body.url,
-      id: 1,
+      id: Number(cnt + 1),
     }).save(function(err,doc) {
-      if (err) res.send('404');
+      if (err) {
+        res.send(err);
+      }
         console.log(doc,'doc');
-        res.send("SAVED!");
+        res.send({"original_url":req.body.url,"short_url":Number(cnt+1)});
       });
-//   urlModel.countDocuments({}).then((err,cnt) => {
-//       console.log(req.body.url,cnt)
-
-//     let newUrl = new urlModel({
-//       url: req.body.url,
-//       id: cnt+ 1,
-//     }).save(function(err,doc) {
-//       if (err) res.send('404');
-//         console.log(doc,'doc');
-//         res.send("SAVED!");
-//       });
-    
-//   })
- 
-  
+  })
 })
 
   
